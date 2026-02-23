@@ -1,0 +1,88 @@
+# To-Do App Design Document
+
+## Summary
+A web-based to-do app where a user can sign in with Google from any browser and manage projects and tasks. Tasks are organized in five status columns with drag-and-drop and a simple status analytics chart.
+
+## Goals
+- Google-only sign-in and persistent access from multiple browsers
+- Projects with task boards and drag-and-drop status changes
+- Clear status analytics (done, cancelled, unfinished)
+- Simple, learnable UX suitable for a solo user
+
+## Non-Goals
+- Multi-user collaboration or sharing
+- Email/password authentication or email verification
+- Advanced analytics beyond the three-bucket pie chart
+
+## Users and Permissions
+- Single-user projects only
+- A user can only see and edit their own projects and tasks
+
+## Functional Requirements
+
+### Authentication
+- Sign in with Google
+- Sign out
+- Session persistence across browsers and refreshes
+
+### Projects
+- Create a project
+- Delete a project
+- List all projects owned by the user
+
+### Tasks
+- Add a new task to `to-do`
+- Edit task definition
+- Change task status via drag and drop
+- Reorder tasks within a column
+- Delete a task
+- Delete all tasks in a project
+
+### Analytics
+- Pie chart with three buckets:
+  - Done
+  - Cancelled
+  - Unfinished (to-do, in progress, in review)
+
+## Data Model (Logical)
+
+### User
+- id
+- name
+- email
+- projects[]
+
+### Project
+- id
+- ownerId
+- name
+- tasks[]
+- createdAt
+- updatedAt
+
+### Task
+- id
+- projectId
+- definition
+- status (`to-do`, `in progress`, `in review`, `cancelled`, `done`)
+- targetCompletionDate (optional)
+- actualCompletionDate (optional)
+- sortOrder
+- createdAt
+- updatedAt
+
+## UX Flows
+- **Sign-in:** user signs in with Google and is redirected to their project list
+- **Project creation:** user creates a project and lands on its task board
+- **Task creation:** user adds a task to `to-do` and can drag it across columns
+- **Task completion:** moving a task to `done` can set `actualCompletionDate`
+- **Analytics:** chart updates when task statuses change
+
+## Edge Cases and Validation
+- Disallow empty project names or task definitions
+- Prevent invalid dates
+- Confirm destructive actions (delete project, delete all tasks)
+
+## Decisions
+- Projects are single-user only (no collaboration, sharing, or roles)
+- Auth is Google-only (no email/password, no email verification flows)
