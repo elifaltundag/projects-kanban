@@ -3,12 +3,18 @@
 ## Decisions Locked
 - Single-user projects only (no sharing, roles, or collaboration)
 - Google-only auth (no email/password, no verification flows)
+- App hosting: Render
+- DB hosting: Neon
+- Database: SQLite (local), Postgres (production/demo)
+- ORM: Prisma
+- Auth: Auth.js / NextAuth
 
-## Phase 0 - Stack Choices
-- Choose auth provider (e.g. NextAuth, Clerk, Supabase Auth)
-- Choose database (e.g. Postgres in prod, SQLite for local dev)
-- Choose ORM (e.g. Prisma or Drizzle)
-- Confirm hosting target (e.g. Vercel)
+## Phase 0 - Stack Choices (Final)
+- App hosting: Render
+- DB hosting: Neon
+- Database: SQLite (local), Postgres (production/demo)
+- ORM: Prisma
+- Auth: Auth.js / NextAuth (Google-only)
 
 ## Phase 1 - Environment Setup
 - Create OAuth app and obtain Google client ID/secret
