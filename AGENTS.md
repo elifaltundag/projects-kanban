@@ -10,7 +10,7 @@
 - Global layout: `src/app/layout.tsx`
 - Global styles: `src/app/globals.css`
 - Public assets: `public/`
-- Draft requirements: `draft.txt`
+- Design document: `DesignDocument.txt`
 
 ## Common Commands
 - Dev server: `npm run dev`
@@ -21,4 +21,4 @@
 ## Repo Guidelines
 - Prefer TypeScript, keep components in `src/app/` unless new structure is introduced.
 - Avoid adding new dependencies unless required by the task.
-- Update `draft.txt` if requirements or decisions change.
+- Update `DesignDocument.txt` if requirements or decisions change.
