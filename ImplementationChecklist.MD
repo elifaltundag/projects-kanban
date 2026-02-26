@@ -21,6 +21,7 @@
 - Add env vars for auth and database
 - Add auth callback URL for local and production
 - Validate `npm run dev` boots cleanly
+- Note: Prisma initialization is already done; schema work starts in Phase 2
 
 ## Phase 2 - Data Model
 - Define `User`
