@@ -1,5 +1,12 @@
 # Implementation Checklist
 
+## Progress
+- Stack decisions finalized
+- Prisma installed (`prisma`, `@prisma/client`)
+- dotenv installed
+- Prisma schema set to SQLite for local dev
+- `.env` and `.env.example` created (Neon URL stored in `DATABASE_URL_PROD`)
+
 ## Decisions Locked
 - Single-user projects only (no sharing, roles, or collaboration)
 - Google-only auth (no email/password, no verification flows)
