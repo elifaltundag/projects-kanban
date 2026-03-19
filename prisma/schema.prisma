@@ -10,5 +10,49 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = env("DATABASE_URL")
+}
+
+enum TaskStatus {
+  TO_DO
+  IN_PROGRESS
+  IN_REVIEW
+  CANCELLED
+  DONE
+}
+
+model User {
+  id        String    @id @default(cuid())
+  name      String?
+  email     String    @unique
+  projects  Project[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Project {
+  id        String   @id @default(cuid())
+  ownerId   String
+  name      String
+  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  tasks     Task[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([ownerId])
+}
+
+model Task {
+  id                   String     @id @default(cuid())
+  projectId            String
+  definition           String
+  status               TaskStatus @default(TO_DO)
+  targetCompletionDate DateTime?
+  actualCompletionDate DateTime?
+  sortOrder            Int
+  project              Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt            DateTime   @default(now())
+  updatedAt            DateTime   @updatedAt
+
+  @@index([projectId])
+  @@index([projectId, status, sortOrder])
 }
