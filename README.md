@@ -6,12 +6,12 @@ A solo-user to-do app built with Next.js. The product supports Google sign-in, p
 - Phase 0: done
 - Phase 1: done
 - Phase 2: done
-- Phase 3: not started
+- Phase 3: done
 
 ## Stack
 - App: Next.js (App Router) + React 19 + TypeScript
 - Styling: Tailwind CSS v4
-- Auth: Auth.js / NextAuth (Google-only, planned in Phase 3)
+- Auth: Auth.js / `next-auth` (Google-only)
 - ORM: Prisma
 - Database: SQLite for local development, Postgres for production/demo
 - DB Hosting: Neon
@@ -25,6 +25,14 @@ A solo-user to-do app built with Next.js. The product supports Google sign-in, p
   - `Project`
   - `Task`
   - `TaskStatus`
+- Auth.js configured with Google sign-in
+- Prisma auth models added for:
+  - `Account`
+  - `Session`
+  - `VerificationToken`
+- Prisma adapter configured for database-backed auth and sessions
+- Home page sign-in/sign-out UI implemented
+- Protected `/projects` route added
 - Local migrations created and applied
 - Local Prisma database created as `dev.db`
 
@@ -34,8 +42,22 @@ A solo-user to-do app built with Next.js. The product supports Google sign-in, p
 - `id`
 - `name`
 - `email`
+- `emailVerified`
+- `image`
 - `createdAt`
 - `updatedAt`
+
+### Account
+- `id`
+- `userId`
+- `provider`
+- `providerAccountId`
+
+### Session
+- `id`
+- `sessionToken`
+- `userId`
+- `expires`
 
 ### Project
 - `id`
@@ -71,6 +93,8 @@ npm run dev
 
 Open `http://localhost:3000` in your browser.
 
+Use the home page to sign in with Google. After signing in, open `/projects` to verify the protected route.
+
 ## Useful Commands
 
 ```bash
@@ -97,3 +121,9 @@ AUTH_URL=
 ```
 
 See `.env.example` for the local template.
+
+## Auth Notes
+
+- Google OAuth test users are managed in Google Cloud Console, not in this repo.
+- Local auth sessions are stored in the database through Prisma.
+- Signed-out users are redirected away from `/projects` back to `/`.

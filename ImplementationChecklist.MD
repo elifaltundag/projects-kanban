@@ -11,6 +11,11 @@
 - Initial Prisma migration created and applied locally
 - Follow-up migration created and applied for task date field renaming
 - Local database verified through Prisma Studio
+- Auth.js (`next-auth`) installed and configured for Google sign-in
+- Auth-related Prisma models added and migrated locally
+- Prisma adapter connected for database-backed auth and sessions
+- Sign-in and sign-out UI implemented on the home page
+- Protected `/projects` route added and verified
 
 ## Decisions Locked
 - Single-user projects only (no sharing, roles, or collaboration)
@@ -25,7 +30,7 @@
 - Phase 0: DONE
 - Phase 1: DONE
 - Phase 2: DONE
-- Phase 3: TODO
+- Phase 3: DONE
 - Phase 4: TODO
 - Phase 5: TODO
 - Phase 6: TODO
