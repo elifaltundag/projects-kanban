@@ -60,10 +60,15 @@
 - Verify schema and database in Prisma Studio
 
 ## Phase 3 - Auth and Session - TODO
-- Configure Google-only OAuth
-- Set up session handling
-- Add protected route guard
-- Create sign-in and sign-out UI
+- Install and configure Auth.js for this Next.js app (`next-auth`)
+- Add Google sign-in settings in environment variables and auth configuration
+- Update `prisma/schema.prisma` for Auth.js by adding the required auth tables/models (`Account`, `Session`, and the related `User` fields; include `VerificationToken` if using the standard adapter schema)
+- Create and apply a Prisma migration for the new auth tables
+- Configure Auth.js to use Prisma so Google accounts and sessions are stored in the database
+- Make sure a signed-in Google user is matched to the correct local `User` record
+- Set up persistent login sessions so the user stays signed in after refresh or reopening the browser
+- Protect app pages so only signed-in users can access projects and tasks
+- Add a sign-in page/button and a sign-out button
 
 ## Phase 4 - Projects - TODO
 - Project list page / section
