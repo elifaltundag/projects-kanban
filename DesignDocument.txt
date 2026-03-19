@@ -3,6 +3,11 @@
 ## Summary
 A web-based to-do app where a user can sign in with Google from any browser and manage projects and tasks. Tasks are organized in five status columns with drag-and-drop and a simple status analytics chart.
 
+## Current Implementation State
+- Environment setup is complete for local development
+- The Phase 2 Prisma data model is implemented and migrated locally
+- Auth, sessions, and application UI flows are not implemented yet
+
 ## Goals
 - Google-only sign-in and persistent access from multiple browsers
 - Projects with task boards and drag-and-drop status changes
@@ -51,11 +56,14 @@ A web-based to-do app where a user can sign in with Google from any browser and 
 - name
 - email
 - projects[]
+- createdAt
+- updatedAt
 
 ### Project
 - id
 - ownerId
 - name
+- owner
 - tasks[]
 - createdAt
 - updatedAt
@@ -70,6 +78,26 @@ A web-based to-do app where a user can sign in with Google from any browser and 
 - sortOrder
 - createdAt
 - updatedAt
+
+## Data Model (Implemented In Prisma)
+
+### TaskStatus enum
+- `TO_DO`
+- `IN_PROGRESS`
+- `IN_REVIEW`
+- `CANCELLED`
+- `DONE`
+
+### Constraints and relations
+- `User.email` is unique
+- `Project.ownerId` references `User.id`
+- `Task.projectId` references `Project.id`
+- Deleting a `User` cascades to owned `Project` records
+- Deleting a `Project` cascades to owned `Task` records
+- Indexed fields:
+  - `Project.ownerId`
+  - `Task.projectId`
+  - `Task(projectId, status, sortOrder)`
 
 ## UX Flows
 - **Sign-in:** user signs in with Google and is redirected to their project list
@@ -86,3 +114,5 @@ A web-based to-do app where a user can sign in with Google from any browser and 
 ## Decisions
 - Projects are single-user only (no collaboration, sharing, or roles)
 - Auth is Google-only (no email/password, no email verification flows)
+- Local development uses SQLite
+- Production/demo environment will use Postgres

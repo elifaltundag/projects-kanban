@@ -1,45 +1,99 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# My First App
 
-## Getting Started
+A solo-user to-do app built with Next.js. The product supports Google sign-in, project-based task boards, drag-and-drop task status changes, and lightweight status analytics.
 
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Current Status
+- Phase 0: done
+- Phase 1: done
+- Phase 2: done
+- Phase 3: not started
 
 ## Stack
-- App: Next.js (App Router) + React + TypeScript
-- Styling: Tailwind CSS
-- Auth: Auth.js / NextAuth (Google-only)
+- App: Next.js (App Router) + React 19 + TypeScript
+- Styling: Tailwind CSS v4
+- Auth: Auth.js / NextAuth (Google-only, planned in Phase 3)
 - ORM: Prisma
-- Database: SQLite (local) + Postgres (production/demo)
+- Database: SQLite for local development, Postgres for production/demo
 - DB Hosting: Neon
 - App Hosting: Render
 
-## Learn More
+## Implemented So Far
+- Local environment configured with `.env` and `.env.example`
+- Prisma configured with SQLite for local development
+- Prisma data model implemented for:
+  - `User`
+  - `Project`
+  - `Task`
+  - `TaskStatus`
+- Local migrations created and applied
+- Local Prisma database created as `dev.db`
 
-To learn more about Next.js, take a look at the following resources:
+## Current Data Model
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### User
+- `id`
+- `name`
+- `email`
+- `createdAt`
+- `updatedAt`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Project
+- `id`
+- `ownerId`
+- `name`
+- `createdAt`
+- `updatedAt`
 
-## Deploy on Vercel
+### Task
+- `id`
+- `projectId`
+- `definition`
+- `status`
+- `targetCompletionDate`
+- `actualCompletionDate`
+- `sortOrder`
+- `createdAt`
+- `updatedAt`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Getting Started
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run the development server:
+
+```bash
+npm run dev
+```
+
+Open `http://localhost:3000` in your browser.
+
+## Useful Commands
+
+```bash
+npm run dev
+npm run lint
+npm run build
+npx prisma validate
+npx prisma generate
+npx prisma migrate status
+npx prisma studio
+```
+
+## Environment Variables
+
+The project currently expects these values:
+
+```env
+DATABASE_URL=
+DATABASE_URL_PROD=
+AUTH_GOOGLE_ID=
+AUTH_GOOGLE_SECRET=
+AUTH_SECRET=
+AUTH_URL=
+```
+
+See `.env.example` for the local template.

@@ -6,6 +6,11 @@
 - dotenv installed
 - Prisma schema set to SQLite for local dev
 - `.env` and `.env.example` created (Neon URL stored in `DATABASE_URL_PROD`)
+- Phase 2 schema completed for `User`, `Project`, `Task`, and `TaskStatus`
+- Prisma Client generated successfully
+- Initial Prisma migration created and applied locally
+- Follow-up migration created and applied for task date field renaming
+- Local database verified through Prisma Studio
 
 ## Decisions Locked
 - Single-user projects only (no sharing, roles, or collaboration)
@@ -16,41 +21,58 @@
 - ORM: Prisma
 - Auth: Auth.js / NextAuth
 
-## Phase 0 - Stack Choices (Final)
+## Phase Status Overview
+- Phase 0: DONE
+- Phase 1: DONE
+- Phase 2: DONE
+- Phase 3: TODO
+- Phase 4: TODO
+- Phase 5: TODO
+- Phase 6: TODO
+- Phase 7: TODO
+- Phase 8: TODO
+- Phase 9: TODO
+- Phase 10: TODO
+
+## Phase 0 - Stack Choices (Final) - DONE
 - App hosting: Render
 - DB hosting: Neon
 - Database: SQLite (local), Postgres (production/demo)
 - ORM: Prisma
 - Auth: Auth.js / NextAuth (Google-only)
 
-## Phase 1 - Environment Setup
+## Phase 1 - Environment Setup - DONE
 - Create OAuth app and obtain Google client ID/secret
 - Add env vars for auth and database
 - Add auth callback URL for local and production
 - Validate `npm run dev` boots cleanly
 - Note: Prisma initialization is already done; schema work starts in Phase 2
 
-## Phase 2 - Data Model
+## Phase 2 - Data Model - DONE
 - Define `User`
 - Define `Project` with owner reference
 - Define `Task` with status enum and sort order
-- Add timestamps (`createdAt`, `updatedAt`, `completedAt`)
+- Add timestamps (`createdAt`, `updatedAt`, `actualCompletionDate`)
+- Add `targetCompletionDate`
+- Generate Prisma Client
 - Generate and run initial migration
+- Run follow-up rename migration for task date fields
+- Verify schema and database in Prisma Studio
 
-## Phase 3 - Auth and Session
+## Phase 3 - Auth and Session - TODO
 - Configure Google-only OAuth
 - Set up session handling
 - Add protected route guard
 - Create sign-in and sign-out UI
 
-## Phase 4 - Projects
+## Phase 4 - Projects - TODO
 - Project list page / section
 - Create project flow (form + validation)
 - Delete project flow (confirm dialog)
 - Empty state for no projects
 - Ensure users only see their own projects
 
-## Phase 5 - Task Board
+## Phase 5 - Task Board - TODO
 - 5 status columns: `to-do`, `in progress`, `in review`, `cancelled`, `done`
 - Add task to `to-do`
 - Edit task definition
@@ -60,29 +82,29 @@
 - Drag-and-drop between columns
 - Persist status and order to DB
 
-## Phase 6 - Analytics
+## Phase 6 - Analytics - TODO
 - Compute counts for `done`, `cancelled`, `unfinished`
 - Render pie chart for the three buckets
 - Update chart reactively after changes
 
-## Phase 7 - Validation and UX
+## Phase 7 - Validation and UX - TODO
 - Validate required fields (project name, task definition)
 - Validate date inputs (no invalid date)
 - Optimistic UI for drag/drop with rollback on error
 - Loading and error states
 
-## Phase 8 - QA
+## Phase 8 - QA - TODO
 - Auth flow: sign-in, sign-out, session persistence
 - Project CRUD: create, delete, list
 - Task CRUD: create, edit, delete, delete all
 - Drag/drop: reorder and status change persistence
 - Analytics: correct counts after each action
 
-## Phase 9 - Minimal Tests
+## Phase 9 - Minimal Tests - TODO
 - Model tests for task status transitions
 - UI tests for create project and create task flows
 
-## Phase 10 - Deployment Readiness
+## Phase 10 - Deployment Readiness - TODO
 - Production auth callback URL verified
 - Build passes: `npm run build`
 - Lint passes: `npm run lint`
