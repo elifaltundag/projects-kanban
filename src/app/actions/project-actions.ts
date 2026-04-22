@@ -2,15 +2,14 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { auth } from "../../../auth";
-import prisma from "../../lib/prisma";
+import { requireUserId } from "../../lib/auth-user";
+import {
+  createProjectForUser,
+  deleteProjectForUser,
+} from "../../lib/project-queries";
 
 export async function createProject(formData: FormData) {
-  const session = await auth();
-
-  if (!session?.user?.id) {
-    redirect("/");
-  }
+  const userId = await requireUserId();
 
   const rawName = formData.get("name");
   const name = typeof rawName === "string" ? rawName.trim() : "";
@@ -19,23 +18,14 @@ export async function createProject(formData: FormData) {
     redirect("/projects?error=project-name-required");
   }
 
-  await prisma.project.create({
-    data: {
-      name,
-      ownerId: session.user.id,
-    },
-  });
+  await createProjectForUser(userId, name);
 
   revalidatePath("/projects");
   redirect("/projects?created=1");
 }
 
 export async function deleteProject(formData: FormData) {
-  const session = await auth();
-
-  if (!session?.user?.id) {
-    redirect("/");
-  }
+  const userId = await requireUserId();
 
   const rawProjectId = formData.get("projectId");
   const projectId = typeof rawProjectId === "string" ? rawProjectId : "";
@@ -44,12 +34,7 @@ export async function deleteProject(formData: FormData) {
     redirect("/projects?error=project-delete-invalid");
   }
 
-  const deleteResult = await prisma.project.deleteMany({
-    where: {
-      id: projectId,
-      ownerId: session.user.id,
-    },
-  });
+  const deleteResult = await deleteProjectForUser(userId, projectId);
 
   revalidatePath("/projects");
 

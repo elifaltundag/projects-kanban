@@ -1,9 +1,8 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { auth } from "../../../auth";
 import { createProject } from "../actions/project-actions";
 import { DeleteProjectButton } from "./delete-project-button";
-import prisma from "../../lib/prisma";
+import { requireSessionUser } from "../../lib/auth-user";
+import { listProjectsForUser } from "../../lib/project-queries";
 
 type ProjectsPageProps = {
   searchParams?: Promise<{
@@ -16,11 +15,7 @@ type ProjectsPageProps = {
 export default async function ProjectsPage({
   searchParams,
 }: ProjectsPageProps) {
-  const session = await auth();
-
-  if (!session?.user?.id) {
-    redirect("/");
-  }
+  const sessionUser = await requireSessionUser();
 
   const resolvedSearchParams = await searchParams;
   const created = resolvedSearchParams?.created === "1";
@@ -31,20 +26,7 @@ export default async function ProjectsPage({
     resolvedSearchParams?.error === "project-delete-invalid" ||
     resolvedSearchParams?.error === "project-delete-missing";
 
-  const projects = await prisma.project.findMany({
-    where: {
-      ownerId: session.user.id,
-    },
-    orderBy: {
-      updatedAt: "desc",
-    },
-    select: {
-      id: true,
-      name: true,
-      createdAt: true,
-      updatedAt: true,
-    },
-  });
+  const projects = await listProjectsForUser(sessionUser.id);
 
   const projectCountLabel =
     projects.length === 1 ? "1 project" : `${projects.length} projects`;
@@ -61,9 +43,9 @@ export default async function ProjectsPage({
               Your projects now render as a real list backed by the database.
             </h1>
             <p className="max-w-2xl text-lg leading-8 text-stone-600">
-              Signed in as {session.user.name ?? session.user.email}. The page
-              is loading your projects on the server and presenting them as the
-              main surface for the next Phase 4 steps.
+              Signed in as {sessionUser?.name ?? sessionUser?.email}. The page
+              is loading your projects through an owner-scoped server query and
+              presenting them as the main surface for the next Phase 4 steps.
             </p>
             <section className="rounded-[1.75rem] border border-stone-200 bg-stone-50 p-6 sm:p-8">
               <div className="flex flex-col gap-6">
