@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { auth } from "../../auth";
 import { signInWithGoogle, signOutUser } from "./actions/auth-actions";
 
@@ -44,12 +45,20 @@ export default async function Home() {
                   </div>
 
                   <form action={signOutUser}>
-                    <button
-                      type="submit"
-                      className="rounded-full bg-stone-50 px-5 py-3 text-sm font-semibold text-stone-950 transition hover:bg-stone-200"
-                    >
-                      Sign out
-                    </button>
+                    <div className="flex flex-wrap gap-3">
+                      <Link
+                        href="/projects"
+                        className="rounded-full bg-amber-300 px-5 py-3 text-sm font-semibold text-stone-950 transition hover:bg-amber-200"
+                      >
+                        Go to projects
+                      </Link>
+                      <button
+                        type="submit"
+                        className="rounded-full bg-stone-50 px-5 py-3 text-sm font-semibold text-stone-950 transition hover:bg-stone-200"
+                      >
+                        Sign out
+                      </button>
+                    </div>
                   </form>
                 </div>
               ) : (

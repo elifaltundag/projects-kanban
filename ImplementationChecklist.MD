@@ -64,7 +64,7 @@
 - Run follow-up rename migration for task date fields
 - Verify schema and database in Prisma Studio
 
-## Phase 3 - Auth and Session - TODO
+## Phase 3 - Auth and Session - DONE
 - Install and configure Auth.js for this Next.js app (`next-auth`)
 - Add Google sign-in settings in environment variables and auth configuration
 - Update `prisma/schema.prisma` for Auth.js by adding the required auth tables/models (`Account`, `Session`, and the related `User` fields; include `VerificationToken` if using the standard adapter schema)
