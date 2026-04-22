@@ -16,6 +16,11 @@
 - Prisma adapter connected for database-backed auth and sessions
 - Sign-in and sign-out UI implemented on the home page
 - Protected `/projects` route added and verified
+- Phase 4 projects page implemented with owner-scoped server queries
+- Project create flow implemented with server-side validation
+- Project delete flow implemented with confirmation and owner-scoped deletion
+- Shared auth/project helpers added to centralize ownership checks
+- Phase 4 verified with manual project create/delete plus lint and build
 
 ## Decisions Locked
 - Single-user projects only (no sharing, roles, or collaboration)
@@ -31,7 +36,7 @@
 - Phase 1: DONE
 - Phase 2: DONE
 - Phase 3: DONE
-- Phase 4: TODO
+- Phase 4: DONE
 - Phase 5: TODO
 - Phase 6: TODO
 - Phase 7: TODO
@@ -75,7 +80,7 @@
 - Protect app pages so only signed-in users can access projects and tasks
 - Add a sign-in page/button and a sign-out button
 
-## Phase 4 - Projects - TODO
+## Phase 4 - Projects - DONE
 - Replace the `/projects` placeholder page with a real projects index for signed-in users
 - Load projects from Prisma on the server using the signed-in user from Auth.js
 - Ensure project queries are scoped to the authenticated user so users only see their own projects
