@@ -2,11 +2,13 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "../../../auth";
 import { createProject } from "../actions/project-actions";
+import { DeleteProjectButton } from "./delete-project-button";
 import prisma from "../../lib/prisma";
 
 type ProjectsPageProps = {
   searchParams?: Promise<{
     created?: string;
+    deleted?: string;
     error?: string;
   }>;
 };
@@ -22,8 +24,12 @@ export default async function ProjectsPage({
 
   const resolvedSearchParams = await searchParams;
   const created = resolvedSearchParams?.created === "1";
+  const deleted = resolvedSearchParams?.deleted === "1";
   const projectNameRequired =
     resolvedSearchParams?.error === "project-name-required";
+  const projectDeleteError =
+    resolvedSearchParams?.error === "project-delete-invalid" ||
+    resolvedSearchParams?.error === "project-delete-missing";
 
   const projects = await prisma.project.findMany({
     where: {
@@ -108,6 +114,17 @@ export default async function ProjectsPage({
                     Project created successfully.
                   </p>
                 ) : null}
+                {deleted ? (
+                  <p className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm leading-7 text-emerald-700">
+                    Project deleted successfully.
+                  </p>
+                ) : null}
+                {projectDeleteError ? (
+                  <p className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm leading-7 text-rose-700">
+                    That project could not be deleted. It may be missing or it
+                    may not belong to this account.
+                  </p>
+                ) : null}
               </div>
             </section>
             <div className="flex items-center justify-between gap-4 rounded-[1.5rem] border border-stone-200 bg-stone-50 px-6 py-5">
@@ -173,9 +190,10 @@ export default async function ProjectsPage({
                         </div>
                       </div>
                       <div className="shrink-0">
-                        <span className="inline-flex rounded-full border border-stone-300 px-3 py-2 text-sm font-medium text-stone-700">
-                          Board coming in Phase 5
-                        </span>
+                        <DeleteProjectButton
+                          projectId={project.id}
+                          projectName={project.name}
+                        />
                       </div>
                     </div>
                   </article>
