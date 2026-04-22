@@ -76,11 +76,20 @@
 - Add a sign-in page/button and a sign-out button
 
 ## Phase 4 - Projects - TODO
-- Project list page / section
-- Create project flow (form + validation)
-- Delete project flow (confirm dialog)
-- Empty state for no projects
-- Ensure users only see their own projects
+- Replace the `/projects` placeholder page with a real projects index for signed-in users
+- Load projects from Prisma on the server using the signed-in user from Auth.js
+- Ensure project queries are scoped to the authenticated user so users only see their own projects
+- Render a project list / section that shows the current user's projects
+- Add an empty state when the signed-in user has no projects yet
+- Add a create project form on the projects page
+- Validate the project name before creation (required, no blank-only values)
+- Create projects in the database with the authenticated user set as the owner
+- Refresh the projects view after creation so the new project appears immediately
+- Add a delete project action for each project in the list
+- Show a confirmation step before deleting a project
+- Ensure delete operations are scoped to the authenticated user's own projects only
+- Verify that deleting a project also removes its related tasks through the existing Prisma relation behavior
+- Confirm the signed-out user experience still redirects away from `/projects`
 
 ## Phase 5 - Task Board - TODO
 - 5 status columns: `to-do`, `in progress`, `in review`, `cancelled`, `done`
