@@ -1,14 +1,29 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "../../../auth";
+import { createProject } from "../actions/project-actions";
 import prisma from "../../lib/prisma";
 
-export default async function ProjectsPage() {
+type ProjectsPageProps = {
+  searchParams?: Promise<{
+    created?: string;
+    error?: string;
+  }>;
+};
+
+export default async function ProjectsPage({
+  searchParams,
+}: ProjectsPageProps) {
   const session = await auth();
 
   if (!session?.user?.id) {
     redirect("/");
   }
+
+  const resolvedSearchParams = await searchParams;
+  const created = resolvedSearchParams?.created === "1";
+  const projectNameRequired =
+    resolvedSearchParams?.error === "project-name-required";
 
   const projects = await prisma.project.findMany({
     where: {
@@ -44,6 +59,57 @@ export default async function ProjectsPage() {
               is loading your projects on the server and presenting them as the
               main surface for the next Phase 4 steps.
             </p>
+            <section className="rounded-[1.75rem] border border-stone-200 bg-stone-50 p-6 sm:p-8">
+              <div className="flex flex-col gap-6">
+                <div className="space-y-3">
+                  <p className="text-sm font-medium uppercase tracking-[0.2em] text-stone-500">
+                    Create Project
+                  </p>
+                  <h2 className="text-2xl font-semibold tracking-tight text-stone-950">
+                    Add a new project for this account.
+                  </h2>
+                  <p className="max-w-2xl text-sm leading-7 text-stone-600">
+                    This form posts to a server action. The project name is
+                    trimmed and must not be empty, and the created record is
+                    always attached to your authenticated user ID.
+                  </p>
+                </div>
+                <form action={createProject} className="flex flex-col gap-4">
+                  <label
+                    htmlFor="project-name"
+                    className="text-sm font-medium text-stone-700"
+                  >
+                    Project name
+                  </label>
+                  <div className="flex flex-col gap-3 sm:flex-row">
+                    <input
+                      id="project-name"
+                      name="name"
+                      type="text"
+                      placeholder="Quarterly planning"
+                      className="min-w-0 flex-1 rounded-full border border-stone-300 bg-white px-5 py-3 text-sm text-stone-950 outline-none transition placeholder:text-stone-400 focus:border-stone-950"
+                    />
+                    <button
+                      type="submit"
+                      className="rounded-full bg-stone-950 px-5 py-3 text-sm font-semibold text-stone-50 transition hover:bg-stone-800"
+                    >
+                      Create project
+                    </button>
+                  </div>
+                </form>
+                {projectNameRequired ? (
+                  <p className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm leading-7 text-rose-700">
+                    Project name is required. Enter at least one non-space
+                    character before submitting.
+                  </p>
+                ) : null}
+                {created ? (
+                  <p className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm leading-7 text-emerald-700">
+                    Project created successfully.
+                  </p>
+                ) : null}
+              </div>
+            </section>
             <div className="flex items-center justify-between gap-4 rounded-[1.5rem] border border-stone-200 bg-stone-50 px-6 py-5">
               <div>
                 <p className="text-sm font-medium uppercase tracking-[0.2em] text-stone-500">
@@ -69,12 +135,12 @@ export default async function ProjectsPage() {
                   </h2>
                   <p className="text-base leading-8 text-stone-600">
                     Projects will group the tasks you manage in later phases.
-                    Once the create flow is added, this space will turn into
-                    your starting point for new boards.
+                    Use the create form above to add your first project and
+                    turn this page into the starting point for new boards.
                   </p>
                   <div className="flex flex-wrap gap-3 pt-2">
                     <span className="inline-flex rounded-full bg-stone-950 px-4 py-2 text-sm font-semibold text-stone-50">
-                      Create flow comes next
+                      Create flow ready
                     </span>
                     <span className="inline-flex rounded-full border border-stone-300 px-4 py-2 text-sm font-medium text-stone-700">
                       Empty state ready
