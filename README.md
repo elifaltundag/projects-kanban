@@ -127,3 +127,10 @@ See `.env.example` for the local template.
 - Google OAuth test users are managed in Google Cloud Console, not in this repo.
 - Local auth sessions are stored in the database through Prisma.
 - Signed-out users are redirected away from `/projects` back to `/`.
+
+
+
+
+## Future Features
+- Restore deleted task
+- Restore deleted project
