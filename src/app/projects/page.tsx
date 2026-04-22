@@ -58,45 +58,64 @@ export default async function ProjectsPage() {
                 stays closest to the top.
               </p>
             </div>
-            <div className="grid gap-4">
-              {projects.map((project) => (
-                <article
-                  key={project.id}
-                  className="rounded-[1.5rem] border border-stone-200 bg-stone-50 p-6"
-                >
-                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                    <div className="space-y-3">
-                      <p className="text-xs font-medium uppercase tracking-[0.2em] text-stone-500">
-                        Project
-                      </p>
-                      <h2 className="text-2xl font-semibold tracking-tight text-stone-950">
-                        {project.name}
-                      </h2>
-                      <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-stone-600">
-                        <p>
-                          Created {project.createdAt.toLocaleDateString()}
+            {projects.length === 0 ? (
+              <section className="rounded-[1.75rem] border border-dashed border-stone-300 bg-[linear-gradient(135deg,rgba(250,250,249,1),rgba(245,245,244,1))] p-8 sm:p-10">
+                <div className="max-w-2xl space-y-4">
+                  <p className="text-sm font-medium uppercase tracking-[0.2em] text-stone-500">
+                    No Projects Yet
+                  </p>
+                  <h2 className="text-3xl font-semibold tracking-tight text-stone-950">
+                    Your workspace is ready for its first project.
+                  </h2>
+                  <p className="text-base leading-8 text-stone-600">
+                    Projects will group the tasks you manage in later phases.
+                    Once the create flow is added, this space will turn into
+                    your starting point for new boards.
+                  </p>
+                  <div className="flex flex-wrap gap-3 pt-2">
+                    <span className="inline-flex rounded-full bg-stone-950 px-4 py-2 text-sm font-semibold text-stone-50">
+                      Create flow comes next
+                    </span>
+                    <span className="inline-flex rounded-full border border-stone-300 px-4 py-2 text-sm font-medium text-stone-700">
+                      Empty state ready
+                    </span>
+                  </div>
+                </div>
+              </section>
+            ) : (
+              <div className="grid gap-4">
+                {projects.map((project) => (
+                  <article
+                    key={project.id}
+                    className="rounded-[1.5rem] border border-stone-200 bg-stone-50 p-6"
+                  >
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                      <div className="space-y-3">
+                        <p className="text-xs font-medium uppercase tracking-[0.2em] text-stone-500">
+                          Project
                         </p>
-                        <p>
-                          Updated {project.updatedAt.toLocaleDateString()}
-                        </p>
+                        <h2 className="text-2xl font-semibold tracking-tight text-stone-950">
+                          {project.name}
+                        </h2>
+                        <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-stone-600">
+                          <p>
+                            Created {project.createdAt.toLocaleDateString()}
+                          </p>
+                          <p>
+                            Updated {project.updatedAt.toLocaleDateString()}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="shrink-0">
+                        <span className="inline-flex rounded-full border border-stone-300 px-3 py-2 text-sm font-medium text-stone-700">
+                          Board coming in Phase 5
+                        </span>
                       </div>
                     </div>
-                    <div className="shrink-0">
-                      <span className="inline-flex rounded-full border border-stone-300 px-3 py-2 text-sm font-medium text-stone-700">
-                        Board coming in Phase 5
-                      </span>
-                    </div>
-                  </div>
-                </article>
-              ))}
-              {projects.length === 0 ? (
-                <div className="rounded-[1.5rem] border border-dashed border-stone-300 bg-stone-50 p-6 text-sm leading-7 text-stone-600">
-                  No project cards can render yet because no projects exist for
-                  this user. Step 3 will replace this with the proper empty
-                  state.
-                </div>
-              ) : null}
-            </div>
+                  </article>
+                ))}
+              </div>
+            )}
             <div className="flex flex-wrap gap-3">
               <Link
                 href="/"
