@@ -108,16 +108,12 @@
 8. Persist task status and order changes to the database.
 
 ## Phase 6 - Analytics - TODO
-1. Review the task board page to see where tasks are loaded and refreshed.
-2. Add a small helper to calculate analytics counts from the project tasks.
-3. Map statuses into three buckets: `done`, `cancelled`, and `unfinished`.
-4. Include a total task count for empty-state handling.
-5. Add an analytics section to the project board page.
-6. Render a simple pie chart with labels, colors, and counts.
-7. Show a clear empty state when the project has no tasks.
-8. Make sure task changes refresh the analytics counts automatically.
-9. Verify counts for create, delete, delete all, drag/drop, and keyboard moves.
-
+1. Add a small helper to calculate analytics counts from the project tasks.
+2. Map statuses into three buckets: `done`, `cancelled`, and `unfinished`.
+3. Include a total task count for empty-state handling.
+4. Add an analytics section to the project board page.
+5. Render a simple pie chart with labels, colors, and counts.
+6. Show a clear empty state when the project has no tasks.
 
 ## Phase 7 - Validation and UX - TODO
 - Validate required fields (project name, task definition)

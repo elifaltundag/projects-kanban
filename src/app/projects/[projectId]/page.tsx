@@ -13,6 +13,7 @@ import { ReorderTaskButtons } from "./reorder-task-buttons";
 import { TaskColumnDropZone } from "./task-column-drop-zone";
 import { requireSessionUser } from "../../../lib/auth-user";
 import { getProjectBoardForUser } from "../../../lib/project-queries";
+import { getTaskAnalyticsSummary } from "../../../lib/task-analytics";
 
 type ProjectBoardPageProps = {
   params: Promise<{
@@ -102,6 +103,13 @@ export default async function ProjectBoardPage({
       project.tasks.filter((task) => task.status === column.status),
     ]),
   );
+  const analytics = getTaskAnalyticsSummary(project.tasks);
+  const donePercentage =
+    analytics.total > 0 ? (analytics.done / analytics.total) * 100 : 0;
+  const cancelledPercentage =
+    analytics.total > 0 ? (analytics.cancelled / analytics.total) * 100 : 0;
+  const doneEnd = donePercentage;
+  const cancelledEnd = donePercentage + cancelledPercentage;
 
   return (
     <div className="min-h-screen bg-stone-100 px-6 py-12 text-stone-950">
@@ -146,6 +154,83 @@ export default async function ProjectBoardPage({
                 </div>
               </div>
             </div>
+
+            <section className="rounded-[1.75rem] border border-stone-200 bg-stone-50 p-6 sm:p-8">
+              <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+                <div className="space-y-3">
+                  <p className="text-sm font-medium uppercase tracking-[0.2em] text-stone-500">
+                    Analytics
+                  </p>
+                  <h2 className="text-2xl font-semibold tracking-tight text-stone-950">
+                    Task status summary
+                  </h2>
+                  <p className="max-w-2xl text-sm leading-7 text-stone-600">
+                    This summary groups the board into completed, cancelled,
+                    and unfinished work.
+                  </p>
+                </div>
+                {analytics.total === 0 ? (
+                  <div className="rounded-[1.5rem] border border-dashed border-stone-300 bg-white px-6 py-8 text-center lg:min-w-96">
+                    <p className="text-sm font-semibold uppercase tracking-[0.18em] text-stone-500">
+                      No analytics yet
+                    </p>
+                    <p className="mx-auto mt-3 max-w-sm text-sm leading-7 text-stone-600">
+                      Add tasks to this project to see done, cancelled, and
+                      unfinished counts here.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-6 sm:flex-row sm:items-center lg:justify-end">
+                    <div
+                      aria-label={`Task status chart: ${analytics.done} done, ${analytics.cancelled} cancelled, ${analytics.unfinished} unfinished.`}
+                      className="grid size-44 shrink-0 place-items-center rounded-full border border-stone-200 shadow-inner"
+                      role="img"
+                      style={{
+                        background: `conic-gradient(#059669 0% ${doneEnd}%, #e11d48 ${doneEnd}% ${cancelledEnd}%, #0284c7 ${cancelledEnd}% 100%)`,
+                      }}
+                    >
+                      <div className="grid size-24 place-items-center rounded-full border border-stone-200 bg-stone-50 text-center">
+                        <span className="text-2xl font-semibold tracking-tight text-stone-950">
+                          {analytics.total}
+                        </span>
+                        <span className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
+                          total
+                        </span>
+                      </div>
+                    </div>
+                    <dl className="grid min-w-64 gap-3">
+                      <div className="flex items-center justify-between gap-5 rounded-2xl border border-stone-200 bg-white px-5 py-4">
+                        <dt className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
+                          <span className="size-3 rounded-full bg-emerald-600" />
+                          Done
+                        </dt>
+                        <dd className="text-2xl font-semibold tracking-tight text-stone-950">
+                          {analytics.done}
+                        </dd>
+                      </div>
+                      <div className="flex items-center justify-between gap-5 rounded-2xl border border-stone-200 bg-white px-5 py-4">
+                        <dt className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
+                          <span className="size-3 rounded-full bg-rose-600" />
+                          Cancelled
+                        </dt>
+                        <dd className="text-2xl font-semibold tracking-tight text-stone-950">
+                          {analytics.cancelled}
+                        </dd>
+                      </div>
+                      <div className="flex items-center justify-between gap-5 rounded-2xl border border-stone-200 bg-white px-5 py-4">
+                        <dt className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
+                          <span className="size-3 rounded-full bg-sky-600" />
+                          Unfinished
+                        </dt>
+                        <dd className="text-2xl font-semibold tracking-tight text-stone-950">
+                          {analytics.unfinished}
+                        </dd>
+                      </div>
+                    </dl>
+                  </div>
+                )}
+              </div>
+            </section>
 
             <section className="rounded-[1.75rem] border border-stone-200 bg-stone-50 p-6 sm:p-8">
               <div className="flex flex-col gap-6">
