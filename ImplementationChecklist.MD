@@ -21,6 +21,11 @@
 - Project delete flow implemented with confirmation and owner-scoped deletion
 - Shared auth/project helpers added to centralize ownership checks
 - Phase 4 verified with manual project create/delete plus lint and build
+- Phase 5 task board implemented with owner-scoped project/task loading
+- Task CRUD implemented: create, edit, delete, and delete all with confirmations where required
+- Task ordering and cross-column movement persist `status` and `sortOrder` to the database
+- Accessible task movement added with keyboard controls plus pointer drag-and-drop
+- Phase 5 verified with lint and interactive task-board checks
 
 ## Decisions Locked
 - Single-user projects only (no sharing, roles, or collaboration)
@@ -37,7 +42,7 @@
 - Phase 2: DONE
 - Phase 3: DONE
 - Phase 4: DONE
-- Phase 5: TODO
+- Phase 5: DONE
 - Phase 6: TODO
 - Phase 7: TODO
 - Phase 8: TODO
@@ -96,7 +101,7 @@
 - Verify that deleting a project also removes its related tasks through the existing Prisma relation behavior
 - Confirm the signed-out user experience still redirects away from `/projects`
 
-## Phase 5 - Task Board - TODO
+## Phase 5 - Task Board - DONE
 - Add a per-project task board page for signed-in users
 - Load the selected project and its tasks from Prisma on the server using the authenticated user from Auth.js
 - Render five task status columns on the board: `to-do`, `in progress`, `in review`, `cancelled`, and `done`
