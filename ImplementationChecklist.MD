@@ -57,71 +57,67 @@
 - Auth: Auth.js / NextAuth (Google-only)
 
 ## Phase 1 - Environment Setup - DONE
-- Create OAuth app and obtain Google client ID/secret
-- Add env vars for auth and database
-- Add auth callback URL for local and production
-- Validate `npm run dev` boots cleanly
-- Note: Prisma initialization is already done; schema work starts in Phase 2
+1. Create the Google OAuth app and collect the client ID and client secret.
+2. Add the required environment variables for Auth.js and database access.
+3. Add local and production auth callback URLs to the OAuth app settings.
+4. Keep local SQLite and production Neon connection values documented in `.env` and `.env.example`.
+5. Confirm Prisma initialization is in place before schema work starts.
+6. Run `npm run dev` and verify the app boots cleanly.
 
 ## Phase 2 - Data Model - DONE
-- Define `User`
-- Define `Project` with owner reference
-- Define `Task` with status enum and sort order
-- Add timestamps (`createdAt`, `updatedAt`, `actualCompletionDate`)
-- Add `targetCompletionDate`
-- Generate Prisma Client
-- Generate and run initial migration
-- Run follow-up rename migration for task date fields
-- Verify schema and database in Prisma Studio
+1. Define the core `User` model in `prisma/schema.prisma`.
+2. Define `Project` with a required owner reference back to `User`.
+3. Define `Task` with a project relation, status enum, and persisted `sortOrder`.
+4. Add task and project timestamps, including `createdAt` and `updatedAt`.
+5. Add task date fields for `targetCompletionDate` and `actualCompletionDate`.
+6. Generate Prisma Client after the schema is updated.
+7. Create and apply the initial local migration.
+8. Apply the follow-up migration that renames the task date fields.
+9. Open Prisma Studio and verify the schema and local database tables.
 
 ## Phase 3 - Auth and Session - DONE
-- Install and configure Auth.js for this Next.js app (`next-auth`)
-- Add Google sign-in settings in environment variables and auth configuration
-- Update `prisma/schema.prisma` for Auth.js by adding the required auth tables/models (`Account`, `Session`, and the related `User` fields; include `VerificationToken` if using the standard adapter schema)
-- Create and apply a Prisma migration for the new auth tables
-- Configure Auth.js to use Prisma so Google accounts and sessions are stored in the database
-- Make sure a signed-in Google user is matched to the correct local `User` record
-- Set up persistent login sessions so the user stays signed in after refresh or reopening the browser
-- Protect app pages so only signed-in users can access projects and tasks
-- Add a sign-in page/button and a sign-out button
+1. Install Auth.js for the Next.js app with the `next-auth` package.
+2. Add Google provider settings to the environment variables and auth configuration.
+3. Extend `prisma/schema.prisma` with the Auth.js adapter models and related `User` fields.
+4. Create and apply a Prisma migration for the new auth tables.
+5. Connect Auth.js to Prisma so accounts and sessions are stored in the database.
+6. Verify Google sign-in maps the signed-in account to the correct local `User` record.
+7. Enable persistent sessions so users stay signed in after refresh or reopening the browser.
+8. Add sign-in and sign-out UI on the home page.
+9. Protect app routes so only signed-in users can access projects and tasks.
+10. Verify signed-out users are redirected away from protected pages.
 
 ## Phase 4 - Projects - DONE
-- Replace the `/projects` placeholder page with a real projects index for signed-in users
-- Load projects from Prisma on the server using the signed-in user from Auth.js
-- Ensure project queries are scoped to the authenticated user so users only see their own projects
-- Render a project list / section that shows the current user's projects
-- Add an empty state when the signed-in user has no projects yet
-- Add a create project form on the projects page
-- Validate the project name before creation (required, no blank-only values)
-- Create projects in the database with the authenticated user set as the owner
-- Refresh the projects view after creation so the new project appears immediately
-- Add a delete project action for each project in the list
-- Show a confirmation step before deleting a project
-- Ensure delete operations are scoped to the authenticated user's own projects only
-- Verify that deleting a project also removes its related tasks through the existing Prisma relation behavior
-- Confirm the signed-out user experience still redirects away from `/projects`
+1. Replace the `/projects` placeholder with the real projects page.
+2. Load projects on the server with Auth.js and Prisma.
+3. Scope project reads and deletes to the authenticated owner.
+4. Render the project list and an empty state.
+5. Add the create project flow with name validation.
+6. Add the delete project flow with confirmation.
+7. Refresh the projects view after create and delete actions.
+8. Verify signed-out users are redirected away from `/projects`.
 
 ## Phase 5 - Task Board - DONE
-- Add a per-project task board page for signed-in users
-- Load the selected project and its tasks from Prisma on the server using the authenticated user from Auth.js
-- Render five task status columns on the board: `to-do`, `in progress`, `in review`, `cancelled`, and `done`
-- Render empty column states so the board layout is visible even when a project has no tasks in a given status
-- Add a create task form on the board page
-- Validate the task definition before creation and create new tasks in the database with `TO_DO` as the default status
-- Assign and persist `sortOrder` values for newly created tasks
-- Add edit and delete actions for individual tasks
-- Add a delete-all-tasks action for a project
-- Show a confirmation step before deleting all tasks in a project
-- Reorder tasks within the same column and persist the updated order
-- Support drag-and-drop between columns and persist both status and ordering changes
-- Ensure board updates appear immediately after task actions
-- Ensure board queries and task actions are scoped to the authenticated user's own projects
-- Confirm the signed-out user experience still redirects away from project board routes
+1. Render five task status columns: `to-do`, `in progress`, `in review`, `cancelled`, and `done`.
+2. Add new tasks to the `to-do` column.
+3. Support editing task definitions.
+4. Support deleting individual tasks.
+5. Support deleting all tasks with confirmation.
+6. Reorder tasks within a column.
+7. Drag and drop tasks between columns.
+8. Persist task status and order changes to the database.
 
 ## Phase 6 - Analytics - TODO
-- Compute counts for `done`, `cancelled`, `unfinished`
-- Render pie chart for the three buckets
-- Update chart reactively after changes
+1. Review the task board page to see where tasks are loaded and refreshed.
+2. Add a small helper to calculate analytics counts from the project tasks.
+3. Map statuses into three buckets: `done`, `cancelled`, and `unfinished`.
+4. Include a total task count for empty-state handling.
+5. Add an analytics section to the project board page.
+6. Render a simple pie chart with labels, colors, and counts.
+7. Show a clear empty state when the project has no tasks.
+8. Make sure task changes refresh the analytics counts automatically.
+9. Verify counts for create, delete, delete all, drag/drop, and keyboard moves.
+
 
 ## Phase 7 - Validation and UX - TODO
 - Validate required fields (project name, task definition)
