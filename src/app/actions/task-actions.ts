@@ -7,8 +7,11 @@ import {
   createTaskForProject,
   deleteAllTasksForProject,
   deleteTaskForProject,
+  moveTaskToStatusForProject,
+  reorderTaskWithinColumn,
   updateTaskDefinitionForProject,
 } from "../../lib/task-queries";
+import type { TaskStatus } from "@prisma/client";
 
 export async function createTask(formData: FormData) {
   const userId = await requireUserId();
@@ -123,4 +126,84 @@ export async function deleteAllTasks(formData: FormData) {
   }
 
   redirect(`/projects/${projectId}?cleared=1&count=${deleteResult.count}`);
+}
+
+export async function reorderTask({
+  direction,
+  projectId,
+  taskId,
+}: {
+  direction: "up" | "down";
+  projectId: string;
+  taskId: string;
+}) {
+  const userId = await requireUserId();
+
+  if (!projectId || !taskId || !direction) {
+    return {
+      error: "task-reorder-invalid",
+      ok: false,
+    } as const;
+  }
+
+  const result = await reorderTaskWithinColumn(
+    userId,
+    projectId,
+    taskId,
+    direction,
+  );
+
+  revalidatePath(`/projects/${projectId}`);
+  revalidatePath("/projects");
+
+  if (!result) {
+    return {
+      error: "task-reorder-missing",
+      ok: false,
+    } as const;
+  }
+
+  return {
+    ok: true,
+  } as const;
+}
+
+export async function moveTaskToStatus({
+  projectId,
+  targetStatus,
+  taskId,
+}: {
+  projectId: string;
+  targetStatus: TaskStatus;
+  taskId: string;
+}) {
+  const userId = await requireUserId();
+
+  if (!projectId || !taskId || !targetStatus) {
+    return {
+      error: "task-move-invalid",
+      ok: false,
+    } as const;
+  }
+
+  const result = await moveTaskToStatusForProject(
+    userId,
+    projectId,
+    taskId,
+    targetStatus,
+  );
+
+  revalidatePath(`/projects/${projectId}`);
+  revalidatePath("/projects");
+
+  if (!result) {
+    return {
+      error: "task-move-missing",
+      ok: false,
+    } as const;
+  }
+
+  return {
+    ok: true,
+  } as const;
 }

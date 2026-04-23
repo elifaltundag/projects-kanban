@@ -7,6 +7,10 @@ import {
 } from "../../actions/task-actions";
 import { DeleteAllTasksButton } from "./delete-all-tasks-button";
 import { DeleteTaskButton } from "./delete-task-button";
+import { DraggableTaskCard } from "./draggable-task-card";
+import { MoveTaskStatusButtons } from "./move-task-status-buttons";
+import { ReorderTaskButtons } from "./reorder-task-buttons";
+import { TaskColumnDropZone } from "./task-column-drop-zone";
 import { requireSessionUser } from "../../../lib/auth-user";
 import { getProjectBoardForUser } from "../../../lib/project-queries";
 
@@ -268,7 +272,10 @@ export default async function ProjectBoardPage({
                       </p>
                     </div>
 
-                    <div className="mt-5 flex flex-1 flex-col gap-3">
+                    <TaskColumnDropZone
+                      projectId={project.id}
+                      targetStatus={column.status}
+                    >
                       {tasks.length === 0 ? (
                         <div className="flex flex-1 items-center justify-center rounded-[1.5rem] border border-dashed border-stone-300 bg-white/80 p-6 text-center">
                           <p className="max-w-[14rem] text-sm leading-7 text-stone-500">
@@ -276,67 +283,88 @@ export default async function ProjectBoardPage({
                           </p>
                         </div>
                       ) : (
-                        tasks.map((task) => (
-                          <article
+                        tasks.map((task, index) => (
+                          <DraggableTaskCard
                             key={task.id}
-                            className="rounded-[1.5rem] border border-stone-200 bg-white p-4 shadow-sm"
+                            projectId={project.id}
+                            status={task.status}
+                            taskId={task.id}
                           >
-                            <div className="space-y-3">
-                              <form
-                                action={updateTaskDefinition}
-                                className="flex flex-col gap-3"
-                              >
-                                <input
-                                  type="hidden"
-                                  name="projectId"
-                                  value={project.id}
-                                />
-                                <input
-                                  type="hidden"
-                                  name="taskId"
-                                  value={task.id}
-                                />
-                                <label
-                                  htmlFor={`task-definition-${task.id}`}
-                                  className="text-xs font-medium uppercase tracking-[0.18em] text-stone-500"
+                            <article className="rounded-[1.5rem] border border-stone-200 bg-white p-4 shadow-sm">
+                              <div className="space-y-3">
+                                <form
+                                  action={updateTaskDefinition}
+                                  className="flex flex-col gap-3"
                                 >
-                                  Edit task
-                                </label>
-                                <input
-                                  id={`task-definition-${task.id}`}
-                                  name="definition"
-                                  type="text"
-                                  defaultValue={task.definition}
-                                  className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-950 outline-none transition focus:border-stone-950"
-                                />
-                                <div className="flex justify-end">
-                                  <button
-                                    type="submit"
-                                    className="rounded-full border border-stone-300 px-4 py-2 text-sm font-semibold text-stone-700 transition hover:border-stone-950 hover:text-stone-950"
+                                  <input
+                                    type="hidden"
+                                    name="projectId"
+                                    value={project.id}
+                                  />
+                                  <input
+                                    type="hidden"
+                                    name="taskId"
+                                    value={task.id}
+                                  />
+                                  <label
+                                    htmlFor={`task-definition-${task.id}`}
+                                    className="text-xs font-medium uppercase tracking-[0.18em] text-stone-500"
                                   >
-                                    Save
-                                  </button>
+                                    Edit task
+                                  </label>
+                                  <input
+                                    id={`task-definition-${task.id}`}
+                                    name="definition"
+                                    type="text"
+                                    defaultValue={task.definition}
+                                    className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-950 outline-none transition focus:border-stone-950"
+                                  />
+                                  <div className="flex justify-end">
+                                    <button
+                                      type="submit"
+                                      className="rounded-full border border-stone-300 px-4 py-2 text-sm font-semibold text-stone-700 transition hover:border-stone-950 hover:text-stone-950"
+                                    >
+                                      Save
+                                    </button>
+                                  </div>
+                                </form>
+                                <div className="flex items-center justify-between gap-3">
+                                  <MoveTaskStatusButtons
+                                    currentStatus={task.status}
+                                    projectId={project.id}
+                                    taskId={task.id}
+                                  />
+                                  <ReorderTaskButtons
+                                    projectId={project.id}
+                                    taskId={task.id}
+                                    canMoveUp={index > 0}
+                                    canMoveDown={index < tasks.length - 1}
+                                  />
                                 </div>
-                              </form>
-                              <div className="flex justify-end">
-                                <DeleteTaskButton
-                                  projectId={project.id}
-                                  taskId={task.id}
-                                  taskDefinition={task.definition}
-                                />
+                                <div className="flex items-center justify-between gap-3">
+                                  <p className="text-xs uppercase tracking-[0.18em] text-stone-500">
+                                    Keyboard move: use left/right arrows here via
+                                    the move buttons.
+                                  </p>
+                                  <DeleteTaskButton
+                                    projectId={project.id}
+                                    taskId={task.id}
+                                    taskDefinition={task.definition}
+                                  />
+                                </div>
+                                <div className="flex flex-wrap gap-x-4 gap-y-2 text-xs uppercase tracking-[0.18em] text-stone-500">
+                                  <span>Order {task.sortOrder}</span>
+                                  <span>
+                                    Updated{" "}
+                                    {task.updatedAt.toLocaleDateString()}
+                                  </span>
+                                </div>
                               </div>
-                              <div className="flex flex-wrap gap-x-4 gap-y-2 text-xs uppercase tracking-[0.18em] text-stone-500">
-                                <span>Order {task.sortOrder}</span>
-                                <span>
-                                  Updated{" "}
-                                  {task.updatedAt.toLocaleDateString()}
-                                </span>
-                              </div>
-                            </div>
-                          </article>
+                            </article>
+                          </DraggableTaskCard>
                         ))
                       )}
-                    </div>
+                    </TaskColumnDropZone>
                   </section>
                 );
               })}
