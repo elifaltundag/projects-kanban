@@ -97,14 +97,21 @@
 - Confirm the signed-out user experience still redirects away from `/projects`
 
 ## Phase 5 - Task Board - TODO
-- 5 status columns: `to-do`, `in progress`, `in review`, `cancelled`, `done`
-- Add task to `to-do`
-- Edit task definition
-- Delete task
-- Delete all tasks (confirm)
-- Reorder tasks within a column
-- Drag-and-drop between columns
-- Persist status and order to DB
+- Add a per-project task board page for signed-in users
+- Load the selected project and its tasks from Prisma on the server using the authenticated user from Auth.js
+- Render five task status columns on the board: `to-do`, `in progress`, `in review`, `cancelled`, and `done`
+- Render empty column states so the board layout is visible even when a project has no tasks in a given status
+- Add a create task form on the board page
+- Validate the task definition before creation and create new tasks in the database with `TO_DO` as the default status
+- Assign and persist `sortOrder` values for newly created tasks
+- Add edit and delete actions for individual tasks
+- Add a delete-all-tasks action for a project
+- Show a confirmation step before deleting all tasks in a project
+- Reorder tasks within the same column and persist the updated order
+- Support drag-and-drop between columns and persist both status and ordering changes
+- Ensure board updates appear immediately after task actions
+- Ensure board queries and task actions are scoped to the authenticated user's own projects
+- Confirm the signed-out user experience still redirects away from project board routes
 
 ## Phase 6 - Analytics - TODO
 - Compute counts for `done`, `cancelled`, `unfinished`
