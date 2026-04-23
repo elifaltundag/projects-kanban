@@ -5,6 +5,8 @@ import {
   createTask,
   updateTaskDefinition,
 } from "../../actions/task-actions";
+import { DeleteAllTasksButton } from "./delete-all-tasks-button";
+import { DeleteTaskButton } from "./delete-task-button";
 import { requireSessionUser } from "../../../lib/auth-user";
 import { getProjectBoardForUser } from "../../../lib/project-queries";
 
@@ -13,7 +15,10 @@ type ProjectBoardPageProps = {
     projectId: string;
   }>;
   searchParams?: Promise<{
+    cleared?: string;
+    count?: string;
     created?: string;
+    deleted?: string;
     edited?: string;
     error?: string;
   }>;
@@ -64,7 +69,10 @@ export default async function ProjectBoardPage({
   const sessionUser = await requireSessionUser();
   const { projectId } = await params;
   const resolvedSearchParams = await searchParams;
+  const cleared = resolvedSearchParams?.cleared === "1";
+  const clearedCount = Number(resolvedSearchParams?.count ?? "0");
   const created = resolvedSearchParams?.created === "1";
+  const deleted = resolvedSearchParams?.deleted === "1";
   const edited = resolvedSearchParams?.edited === "1";
   const taskDefinitionRequired =
     resolvedSearchParams?.error === "task-definition-required";
@@ -73,6 +81,10 @@ export default async function ProjectBoardPage({
   const taskEditDefinitionRequired =
     resolvedSearchParams?.error === "task-edit-definition-required";
   const taskEditMissing = resolvedSearchParams?.error === "task-edit-missing";
+  const taskDeleteMissing =
+    resolvedSearchParams?.error === "task-delete-missing";
+  const taskDeleteAllMissing =
+    resolvedSearchParams?.error === "task-delete-all-missing";
 
   const project = await getProjectBoardForUser(sessionUser.id, projectId);
 
@@ -121,6 +133,13 @@ export default async function ProjectBoardPage({
                   columns still render so the board shape is stable before CRUD
                   and drag-and-drop arrive in later steps.
                 </p>
+                <div className="mt-5">
+                  <DeleteAllTasksButton
+                    projectId={project.id}
+                    projectName={project.name}
+                    taskCount={project.tasks.length}
+                  />
+                </div>
               </div>
             </div>
 
@@ -181,9 +200,20 @@ export default async function ProjectBoardPage({
                     Task created successfully in To-Do.
                   </p>
                 ) : null}
+                {cleared ? (
+                  <p className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm leading-7 text-emerald-700">
+                    Deleted {clearedCount}{" "}
+                    {clearedCount === 1 ? "task" : "tasks"} from this project.
+                  </p>
+                ) : null}
                 {edited ? (
                   <p className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm leading-7 text-emerald-700">
                     Task definition updated successfully.
+                  </p>
+                ) : null}
+                {deleted ? (
+                  <p className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm leading-7 text-emerald-700">
+                    Task deleted successfully.
                   </p>
                 ) : null}
                 {taskEditDefinitionRequired ? (
@@ -196,6 +226,18 @@ export default async function ProjectBoardPage({
                   <p className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm leading-7 text-rose-700">
                     That task could not be updated. It may be missing or may
                     not belong to this account.
+                  </p>
+                ) : null}
+                {taskDeleteMissing ? (
+                  <p className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm leading-7 text-rose-700">
+                    That task could not be deleted. It may be missing or may
+                    not belong to this account.
+                  </p>
+                ) : null}
+                {taskDeleteAllMissing ? (
+                  <p className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm leading-7 text-rose-700">
+                    Tasks could not be deleted for this project. It may be
+                    missing or may not belong to this account.
                   </p>
                 ) : null}
               </div>
@@ -276,6 +318,13 @@ export default async function ProjectBoardPage({
                                   </button>
                                 </div>
                               </form>
+                              <div className="flex justify-end">
+                                <DeleteTaskButton
+                                  projectId={project.id}
+                                  taskId={task.id}
+                                  taskDefinition={task.definition}
+                                />
+                              </div>
                               <div className="flex flex-wrap gap-x-4 gap-y-2 text-xs uppercase tracking-[0.18em] text-stone-500">
                                 <span>Order {task.sortOrder}</span>
                                 <span>

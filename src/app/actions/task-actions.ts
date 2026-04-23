@@ -5,6 +5,8 @@ import { revalidatePath } from "next/cache";
 import { requireUserId } from "../../lib/auth-user";
 import {
   createTaskForProject,
+  deleteAllTasksForProject,
+  deleteTaskForProject,
   updateTaskDefinitionForProject,
 } from "../../lib/task-queries";
 
@@ -74,4 +76,51 @@ export async function updateTaskDefinition(formData: FormData) {
   }
 
   redirect(`/projects/${projectId}?edited=1`);
+}
+
+export async function deleteTask(formData: FormData) {
+  const userId = await requireUserId();
+
+  const rawProjectId = formData.get("projectId");
+  const projectId = typeof rawProjectId === "string" ? rawProjectId : "";
+
+  const rawTaskId = formData.get("taskId");
+  const taskId = typeof rawTaskId === "string" ? rawTaskId : "";
+
+  if (!projectId || !taskId) {
+    redirect("/projects?error=task-delete-invalid");
+  }
+
+  const deleteResult = await deleteTaskForProject(userId, projectId, taskId);
+
+  revalidatePath(`/projects/${projectId}`);
+  revalidatePath("/projects");
+
+  if (deleteResult.count === 0) {
+    redirect(`/projects/${projectId}?error=task-delete-missing`);
+  }
+
+  redirect(`/projects/${projectId}?deleted=1`);
+}
+
+export async function deleteAllTasks(formData: FormData) {
+  const userId = await requireUserId();
+
+  const rawProjectId = formData.get("projectId");
+  const projectId = typeof rawProjectId === "string" ? rawProjectId : "";
+
+  if (!projectId) {
+    redirect("/projects?error=task-delete-all-invalid");
+  }
+
+  const deleteResult = await deleteAllTasksForProject(userId, projectId);
+
+  revalidatePath(`/projects/${projectId}`);
+  revalidatePath("/projects");
+
+  if (!deleteResult) {
+    redirect(`/projects/${projectId}?error=task-delete-all-missing`);
+  }
+
+  redirect(`/projects/${projectId}?cleared=1&count=${deleteResult.count}`);
 }

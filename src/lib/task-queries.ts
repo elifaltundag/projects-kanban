@@ -104,3 +104,74 @@ export async function updateTaskDefinitionForProject(
     return updatedTask;
   });
 }
+
+export async function deleteTaskForProject(
+  ownerId: string,
+  projectId: string,
+  taskId: string,
+) {
+  return prisma.$transaction(async (tx) => {
+    const deleteResult = await tx.task.deleteMany({
+      where: {
+        id: taskId,
+        projectId,
+        project: {
+          ownerId,
+        },
+      },
+    });
+
+    if (deleteResult.count === 0) {
+      return deleteResult;
+    }
+
+    await tx.project.update({
+      where: {
+        id: projectId,
+      },
+      data: {
+        updatedAt: new Date(),
+      },
+    });
+
+    return deleteResult;
+  });
+}
+
+export async function deleteAllTasksForProject(
+  ownerId: string,
+  projectId: string,
+) {
+  return prisma.$transaction(async (tx) => {
+    const project = await tx.project.findFirst({
+      where: {
+        id: projectId,
+        ownerId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!project) {
+      return null;
+    }
+
+    const deleteResult = await tx.task.deleteMany({
+      where: {
+        projectId,
+      },
+    });
+
+    await tx.project.update({
+      where: {
+        id: projectId,
+      },
+      data: {
+        updatedAt: new Date(),
+      },
+    });
+
+    return deleteResult;
+  });
+}
